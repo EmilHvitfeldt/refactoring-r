@@ -1,0 +1,36 @@
+--- 
+title: "Refactoring in R"
+author: "Emil Hvitfeldt"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    css: style.css
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "TODO"
+---
+
+# Preface {-}
+
+Many resources on code smells and refactoring are focusing on object-oriented design (OOD), 
+which means that many "ordinary" code smells won't appear in most R code.
+I have for the sake of brevity removed code smells that is very unlikely to occur in general R writing.
+Shortcuts and keybindings will be shown for the [RStudio IDE](https://rstudio.com/).
+
+TODO specify the difference between
+- function
+- variable
+- parameter
+- temp
+- Primitive/Atomic
+
+This resource stands on the shoulder of giants.
+
+Specific mentions are
+
+- https://refactoring.guru/
+- [Refactoring: Improving the Design of Existing Code (2nd Edition)](https://www.amazon.com/Refactoring-Improving-Existing-Addison-Wesley-Signature/dp/0134757599)

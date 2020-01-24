@@ -1,0 +1,174 @@
+# Code Smells
+
+## Bloaters
+
+Bloaters are code, functions or objects that have been increased to an unmanageable size. 
+This can happen slowly or fast but should be handled either way.
+
+### Long Function
+
+Long functions can be a hassle to deal with as the complexity slowly can creep in and become unmanageable after a while.
+A function can become long for various reasons.
+sometimes it is just a series of calculations that happens one after another that each takes up some space, 
+in that case, it can be worth it to [Extract Function](#extract-function)s to give yourself a better overhead of the code. 
+Other times it is the conditional logic in your function that will increase the size, in that case, many of the [Simplifying Conditional Expressions](#simplifying-conditional-expressions) refactors be useful.
+
+Common refactors: [Extract Function](#extract-function), [Replace Temp with Function](#replace-temp-with-function)
+
+### Primitive/Atomic Obsession
+
+Working with specialized data structures such as dates, phone-numbers, coordinates, and currencies it might be tempting to represent them as simple integers or characters.
+A problem that might sneak in is that units are going to be ignored or non-sensical values appear.
+It might be time to introduce a new S3 vector class [Replace Atomic with S3 Class](#replace-atomic-with-s3-class).
+
+groups of primitive vectors that always travel together are [Data Clumps](#data-clumps) and should be fixed with [Extract Class](#extract-class) and [Introduce Parameter Object](#introduce-parameter-object).
+
+
+TODO talk about vctrs package
+
+### Data Clumps
+
+When you have multiple objects always traveling together it might be time to combine them to one object. 
+Think x-coordinates and y-coordinates.
+
+Refactors: [Extract Class](#extract-class), [Introduce Parameter Object](#introduce-parameter-object) and 
+
+
+### Many Parameters
+
+Having a function takes many parameters is often a necessary evil if you want to avoid [Global Data](#global-data). 
+However, the function still might become overwhelming. 
+There are a handful of different patterns we have refactors we can use.
+
+If a parameter can be derived from another parameter then you can use [Replace Parameter with Query](#replace-parameter-with-query) to remove one of the parameters.
+
+If you notice that some variables always travel together, then it might be worth it to [Introduce Parameter Object](#introduce-parameter-object).
+Sometimes you pass a lot of elements of an object or list into a function, 
+it might be worth it to pass the whole object in and extract inside. 
+In that case, you can use [Preserve Whole Object](#preserve-whole-object).
+Sometimes a parameter is used to denote how a function should be dispatched, 
+here you would want to use [Remove Control Flag](#remove-control-flag).
+
+## Change Preventers
+
+These smells mean that if you need to change something in one place in your code, you have to make many changes in other places too. 
+These smells violate the rule suggested by Fowler and Beck which says that classes and possible changes should have a one-to-one relationship.
+
+### Divergent Change
+
+When the same function is changed in different ways for different reasons you might have a problem with Divergent Change. 
+Usually, when we are writing code we want to be able to focus on one point and fix an issue there.
+
+TODO write a better explanation.
+
+### Shotgun Surgery
+
+Shotgun Surgery is similar to [Divergent Change](#divergent-change) but is the opposite problem.
+If you find yourself having to make a bunch of little edits all over your codebase when you update a single function you are having this smell.
+Having to make edits all over the place is hard and it is easy to accidentally miss one.
+
+## Dispensables
+
+Dispensables are things that we can easily get rid out.
+
+### Comments
+
+I'm not saying that you shouldn't use comments. 
+Comments are great at explaining why something is done a certain way.
+But it sometimes happens that comments are used to hide/excuse badly written code.
+If that is the case then it is the code, not the comments that are smelly and should be changed, leaving the comments no longer needed.
+
+### Duplicate Code
+
+Writing the same code multiple places is a waste of time and a way to potentially introduce mistakes.
+Here we would want to [Extract Function](#extract-function).
+
+### Dead Code
+
+Having code that is never used isn't needed and should be removed, simply use [Remove Dead Code](#remove-dead-code).
+
+### Dead Stores
+
+Dead stores happen when you assign a value to a variable and assigns a different value to it before using the original value.
+This is at worst a waste of time, but it is likely a bug in your code.
+
+### Speculative Generality
+
+This smell is all too common. 
+You think to yourself "We will need this feature later, let me just add the needed infrastructure to support it" and then you never end up needing it.
+You added a lot of things that aren't being used, in the best case slowing down your runtime and worst-case making it hard to implement changes you need right now.
+
+Unused parameters can be removed with [Change Function Declaration](#change-function-declaration) and unused code with [Remove Dead Code](#remove-dead-code).
+
+
+## Others
+
+### Lazy Element
+
+We like to add structure, but over the course of development, some functions or classes become too small to justify having around.
+They simply don't do enough and become lazy.
+
+```{r}
+get_mtcars <- function() {
+  mtcars
+}
+
+get_mtcars()
+```
+
+Refactors: [ Inline Function](#-inline-function), [Inline Class](#inline-class).
+
+### Loops
+
+Loops have been around since the early days of programming.
+And you will have a hard time producing something without iteration.
+But this doesn't mean that you have to write the loop yourself.
+
+Refactors: [Replace Loop With Apply](#replace-loop-with-apply)
+
+One problem that loops might introduce is that it leaves the iterating value in the environment
+
+```{r}
+i <- 124
+
+for (i in 1:10) {
+  # ...
+}
+
+i
+```
+
+to avoid this you either have to make sure you don't reuse names, pull the whole loop in a function call or replace with a function from the `apply` family.
+
+TODO: Add examples where you can't avoid loops and what to do about it.
+
+### Mysterious Name
+
+When coding you don't want to spend an unnecessary amount of time trying to figure out what something is. 
+Often this can be alleviated by properly naming objects in our code.
+
+Common refactors: [Rename Variable](#rename-variable), [Rename Function](#rename-function) and [Rename Argument](#rename-argument).
+
+### Repeated Switches 
+
+Having branching logic isn't necessarily a bad idea.
+But having the same switching logic multiple places invites trouble.
+Every time you need to add a new case you need to remember to introduce it everywhere.
+
+## Smells not covered in this book
+
+- Mutable Data
+- Global Data
+- Feature Envy
+- Temporary Field
+- Message Chains
+- Middle Man
+- Insider Trading
+- Large Class
+- Alternative Classes with Different Interfaces
+- Data Class
+- Refused Bequest
+- Switch Statements
+- Parallel Inheritance Hierarchies
+- Lazy Class
+- Inappropriate Intimacy

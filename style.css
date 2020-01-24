@@ -1,0 +1,13 @@
+h1.title {
+  font-size: 2.5em !important;
+}
+
+pre.before {
+  border-style: dashed !important;
+  border-color: #EF8633 !important;
+}
+
+pre.after {
+  border-style: dashed !important;
+  border-color: #3381F7 !important;
+}
